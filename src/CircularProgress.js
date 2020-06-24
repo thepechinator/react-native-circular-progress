@@ -40,7 +40,8 @@ export default class CircularProgress extends React.PureComponent {
       padding,
       renderCap,
       dashedBackground,
-      dashedTint
+      dashedTint,
+      outlineColor,
     } = this.props;
 
     const maxWidthCircle = backgroundWidth ? Math.max(width, backgroundWidth) : width;
@@ -53,6 +54,20 @@ export default class CircularProgress extends React.PureComponent {
       sizeWithPadding,
       radius,
       tintTransparency ? 0 : currentFillAngle,
+      arcSweepAngle
+    );
+    const backgroundPathBorderInner = this.circlePath(
+      sizeWithPadding,
+      sizeWithPadding,
+      radius - 8,
+      0,
+      arcSweepAngle
+    );
+    const backgroundPathBorderOuter = this.circlePath(
+      sizeWithPadding,
+      sizeWithPadding,
+      radius + 8,
+      0,
       arcSweepAngle
     );
     const circlePath = this.circlePath(
@@ -99,7 +114,7 @@ export default class CircularProgress extends React.PureComponent {
 
     return (
       <View style={style}>
-        <Svg width={size + padding} height={size + padding}>
+        <Svg width={size + padding + 5} height={size + padding + 5}>
           <G rotation={rotation} originX={(size + padding) / 2} originY={(size + padding) / 2}>
             {backgroundColor && (
               <Path
@@ -121,6 +136,18 @@ export default class CircularProgress extends React.PureComponent {
                 fill="transparent"
               />
             )}
+            {outlineColor && <Path
+              d={backgroundPathBorderInner}
+              stroke={outlineColor}
+              strokeWidth={1}
+              fill="none"
+            />}
+            {outlineColor && <Path
+              d={backgroundPathBorderOuter}
+              stroke={outlineColor}
+              strokeWidth={1}
+              fill="none"
+            />}
             {cap}
           </G>
         </Svg>
@@ -147,7 +174,8 @@ CircularProgress.propTypes = {
   padding: PropTypes.number,
   renderCap: PropTypes.func,
   dashedBackground: PropTypes.object,
-  dashedTint: PropTypes.object
+  dashedTint: PropTypes.object,
+  outlineColor: PropTypes.string,
 };
 
 CircularProgress.defaultProps = {
